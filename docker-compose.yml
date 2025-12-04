@@ -34,7 +34,7 @@ services:
 
   data_loader:
     # For prod:
-    image: ghcr.io/APPPP:latest
+    image: ghcr.io/janikthepanic/db-dash-demo-db-data-loader:latest
 
     # For dev, use following build:
     # image: test-app

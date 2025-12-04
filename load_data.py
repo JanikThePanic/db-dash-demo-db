@@ -13,7 +13,7 @@ df = pd.read_csv(iris_file)
 print(f"Loaded {len(df)} rows")
 
 # --- 2. Connect to local Weaviate ---
-client = weaviate.connect_to_local(host="localhost", port=3131)
+client = weaviate.connect_to_local(host="weaviate_db", port=3131)
 
 # --- 3. Define schema if not exists ---
 if not client.collections.exists("Iris"):
