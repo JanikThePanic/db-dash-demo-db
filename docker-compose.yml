@@ -1,0 +1,49 @@
+
+# This is a side-chick of the db-dash project
+# This docker-compose file sets up a Weaviate vector database and script to load demo data
+
+---
+name: db-dash-demo-db
+services:
+
+  weaviate_db:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '3131'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.30.0
+    volumes:
+    - weaviate_db:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+    # Ensures app only starts after Weaviate is listening
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3131/v1/.well-known/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  data_loader:
+    # For prod:
+    image: ghcr.io/APPPP:latest
+
+    # For dev, use following build:
+    # image: test-app
+
+    depends_on:
+      weaviate_db:
+        condition: service_healthy
+
+# Persistent volumes
+volumes:
+  weaviate_db:
+...
